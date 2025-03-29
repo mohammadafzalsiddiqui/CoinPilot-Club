@@ -5,18 +5,18 @@ import { InvestmentPlan, IInvestmentPlan, RiskLevel } from '../models/Investment
 import { User, IUser } from '../models/User';
 import cron from 'node-cron';
 import { logger } from '../utils/logger';
-<<<<<<< Updated upstream
 import { analyzeTokenPrice, getRiskMultiplier } from './PriceAnalysisService';
-=======
-import { analyzeTokenPrice, getRiskMultiplier } from './PricaAnalysisService';
->>>>>>> Stashed changes
+import { PluginFactory } from '../plugins/PluginFactory/PluginFactory';
+
 
 export class DCAService {
   private plugin: DCAPlugin;
   private cronJobs: Map<string, cron.ScheduledTask>;
 
   constructor() {
-    this.plugin = process.env.BLOCKCHAIN_PLUGIN === 'ton' ? new TonPlugin() : new InjectivePlugin();
+    const pluginName = process.env.BLOCKCHAIN_PLUGIN || '';
+    console.log("plugin name",pluginName)
+    this.plugin = PluginFactory.getPlugin(pluginName);
     this.cronJobs = new Map();
     this.initializeExistingPlans();
   }
